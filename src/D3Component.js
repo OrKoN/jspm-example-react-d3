@@ -1,9 +1,9 @@
 import React from 'react';
 import d3 from 'd3';
 
-const parseDate = d3.time.format("%d-%b-%y").parse;
-
 // adapted from http://bl.ocks.org/d3noob/b3ff6ae1c120eea654b5
+
+const parseDate = d3.time.format("%d-%b-%y").parse;
 
 const margin = {top: 30, right: 50, bottom: 30, left: 50};
 const width = 600 - margin.left - margin.right;
@@ -40,6 +40,7 @@ export class D3Component extends React.Component {
         d.date = parseDate(d.date);
         d.close = +d.close;
       });
+
       // Scale the range of the data
       x.domain(d3.extent(data, d => d.date));
       y.domain([0, d3.max(data, d => d.close)]);
@@ -53,6 +54,7 @@ export class D3Component extends React.Component {
   }
 
   drawAxises() {
+    // direct dom manipulations by d3 have to be done in componentDidMount
     const xAxisNode = this.refs.xAxis;
     const yAxisNode = this.refs.yAxis;
     d3.select(xAxisNode).call(xAxis);
@@ -63,6 +65,8 @@ export class D3Component extends React.Component {
     if (!this.state.data) {
       return <div>loading data</div>;
     }
+    // important: className instead class
+    // simply render tags instead of using d3 append
     return <svg width={width + margin.left + margin.right} height={height + margin.top + margin.bottom}>
       <g transform={'translate(' + margin.left + ',' + margin.top + ')'}>
         <path className="line" d={valueline(this.state.data)}></path>
